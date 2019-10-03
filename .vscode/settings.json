@@ -1,0 +1,21 @@
+{
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "typescript",
+      "autoFix": true
+    },
+    {
+      "language": "typescriptreact",
+      "autoFix": true
+    }
+  ],
+  "editor.formatOnSave": true,
+  // JavaScriptでのみ保存時フォーマットを有効化
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  // prettierのシングルクオーテーションオプションをon
+  "prettier.singleQuote": true
+}
