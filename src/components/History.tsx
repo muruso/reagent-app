@@ -28,6 +28,11 @@ const Content = styled.div`
   margin: auto;
 `;
 
+const TableWrapper = styled.div`
+  padding-top: 10px;
+  box-sizing: border-box;
+`;
+
 const Table = styled.table`
   width: 1032px;
 
@@ -64,26 +69,23 @@ const TableData = styled.td`
   padding-left: 10px;
   font-style: normal;
   font-weight: bold;
+  vertical-align: top;
+  white-space: pre-wrap;
 `;
 
 interface MyProps {
   history: Array<any>;
 }
 
-interface MyState {}
-
-class History extends React.Component<MyProps, MyState> {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        <YearWrapper>
-          <Year>2019年度</Year>
-        </YearWrapper>
-        <Content>
+const History = (props: MyProps) => {
+  const { history } = props;
+  return (
+    <div>
+      <YearWrapper>
+        <Year>2019年度</Year>
+      </YearWrapper>
+      <Content>
+        <TableWrapper>
           <Table>
             <TableHeaderRow>
               <TableHeader>発注日</TableHeader>
@@ -95,21 +97,31 @@ class History extends React.Component<MyProps, MyState> {
               <TableHeader>価格</TableHeader>
               <TableHeader>合計</TableHeader>
             </TableHeaderRow>
-            <TableBodyRow>
-              <TableData>hoge</TableData>
-              <TableData>hoge</TableData>
-              <TableData>hoge</TableData>
-              <TableData>hoge\n hoge</TableData>
-              <TableData>hoge</TableData>
-              <TableData>hoge</TableData>
-              <TableData>hoge</TableData>
-              <TableData>hoge</TableData>
-            </TableBodyRow>
+            {history.map((data) => (
+              <TableBodyRow>
+                <TableData>{data.orderDate}</TableData>
+                <TableData>{data.deliveryDate}</TableData>
+                <TableData>{data.name}</TableData>
+                <TableData>
+                  {data.reagents.map((reagent) => `${reagent.reagentName}\n`)}
+                </TableData>
+                <TableData>
+                  {data.reagents.map((reagent) => `${reagent.unitPrice}\n`)}
+                </TableData>
+                <TableData>
+                  {data.reagents.map((reagent) => `${reagent.number}\n`)}
+                </TableData>
+                <TableData>
+                  {data.reagents.map((reagent) => `${reagent.price}\n`)}
+                </TableData>
+                <TableData>{data.totalPrice}</TableData>
+              </TableBodyRow>
+            ))}
           </Table>
-        </Content>
-      </div>
-    );
-  }
-}
+        </TableWrapper>
+      </Content>
+    </div>
+  );
+};
 
 export default History;

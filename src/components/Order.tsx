@@ -150,25 +150,25 @@ class Order extends React.Component<MyProps, MyState> {
     super(props);
     this.state = {
       orderItems: [],
-      orderAmounts: {}
+      orderAmounts: {},
     };
   }
 
-  countUp = id => {
+  countUp = (id) => {
     const { orderAmounts } = this.state;
     if (orderAmounts[id] > 98) return;
     orderAmounts[id] += 1;
     this.setState({ orderAmounts });
   };
 
-  countDown = id => {
+  countDown = (id) => {
     const { orderAmounts } = this.state;
     if (orderAmounts[id] < 2) return;
     orderAmounts[id] -= 1;
     this.setState({ orderAmounts });
   };
 
-  addCart = item => {
+  addCart = (item) => {
     const { orderItems, orderAmounts } = this.state;
     if (orderAmounts[item.id]) return;
     const nextOrderItems = Object.assign([], orderItems);
@@ -177,7 +177,7 @@ class Order extends React.Component<MyProps, MyState> {
     nextOrderAmounts[item.id] = 1;
     this.setState({
       orderItems: nextOrderItems,
-      orderAmounts: nextOrderAmounts
+      orderAmounts: nextOrderAmounts,
     });
   };
 
@@ -201,7 +201,7 @@ class Order extends React.Component<MyProps, MyState> {
             </ReagentsTableRow>
           </thead>
           <tbody>
-            {items.map(item => (
+            {items.map((item) => (
               <ReagentsTableBodyRow>
                 <ReagentsTD>{item.name}</ReagentsTD>
                 <ReagentsTD>Maker</ReagentsTD>
@@ -227,14 +227,14 @@ class Order extends React.Component<MyProps, MyState> {
             <ContentText>注文リスト</ContentText>
           </OrderTableHeader>
           <OrderTable>
-            {orderItems.map(item => (
+            {orderItems.map((item) => (
               <OrderTableRow key={item.id}>
                 <OrderTableNameData>{item.name}</OrderTableNameData>
                 <OrderTableAmountData>
                   <OrderTableAmount>
                     <button
                       type="button"
-                      onClick={e => {
+                      onClick={(e) => {
                         this.countDown(item.id);
                       }}
                     >

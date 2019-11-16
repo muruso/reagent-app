@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Order from './components/Order';
 import History from './components/History';
+import Budget from './components/Budget';
 
 const Root = styled.div`
   height: 100%;
@@ -66,6 +67,7 @@ interface MyState {
   currentPage: string;
   items: Array<any>;
   history: Array<any>;
+  budget: Array<any>;
 }
 
 class App extends React.Component<{}, MyState> {
@@ -78,20 +80,20 @@ class App extends React.Component<{}, MyState> {
           id: 1,
           name: 'DEAE-Dextran',
           price: 122,
-          left: 10
+          left: 10,
         },
         {
           id: 2,
           name: 'Polyethylenimine',
           price: 122,
-          left: 10
+          left: 10,
         },
         {
           id: 3,
           name: 'Folate PEG3-Azide',
           price: 122,
-          left: 10
-        }
+          left: 10,
+        },
       ],
       history: [
         {
@@ -103,28 +105,94 @@ class App extends React.Component<{}, MyState> {
               reagentName: 'DEAE-Dextran',
               unitPrice: '12,000',
               number: '12',
-              price: '144,000'
+              price: '144,000',
             },
             {
               reagentName: 'Polyethylenimine',
               unitPrice: '24,000',
               number: '9',
-              price: '216,000'
+              price: '216,000',
             },
             {
               reagentName: 'Folate PEG3-Azide',
               unitPrice: '33,000',
               number: '10',
-              price: '330,000'
-            }
+              price: '330,000',
+            },
           ],
-          sumPrice: '660,000'
-        }
-      ]
+          totalPrice: '660,000',
+        },
+        {
+          orderDate: '2019/09/01',
+          deliveryDate: '2019/09/28',
+          name: '田村 崚',
+          reagents: [
+            {
+              reagentName: 'DEAE-Dextran',
+              unitPrice: '12,000',
+              number: '12',
+              price: '144,000',
+            },
+            {
+              reagentName: 'Polyethylenimine',
+              unitPrice: '24,000',
+              number: '9',
+              price: '216,000',
+            },
+            {
+              reagentName: 'Folate PEG3-Azide',
+              unitPrice: '33,000',
+              number: '10',
+              price: '330,000',
+            },
+          ],
+          totalPrice: '660,000',
+        },
+        {
+          orderDate: '2019/09/01',
+          deliveryDate: '2019/09/28',
+          name: '田村 崚',
+          reagents: [
+            {
+              reagentName: 'DEAE-Dextran',
+              unitPrice: '12,000',
+              number: '12',
+              price: '144,000',
+            },
+            {
+              reagentName: 'Polyethylenimine',
+              unitPrice: '24,000',
+              number: '9',
+              price: '216,000',
+            },
+            {
+              reagentName: 'Folate PEG3-Azide',
+              unitPrice: '33,000',
+              number: '10',
+              price: '330,000',
+            },
+          ],
+          totalPrice: '660,000',
+        },
+      ],
+      budget: [
+        {
+          id: 1,
+          name: 'cell培養',
+        },
+        {
+          id: 2,
+          name: 'ペプチド合成',
+        },
+        {
+          id: 3,
+          name: 'トランスフェクション',
+        },
+      ],
     };
   }
 
-  handleChangePage = nextPage => () => {
+  handleChangePage = (nextPage) => () => {
     this.setState({ currentPage: nextPage });
   };
 
@@ -138,7 +206,13 @@ class App extends React.Component<{}, MyState> {
   );
 
   render() {
-    const { currentPage, items } = this.state;
+    const {
+      // eslint-disable-next-line comma-dangle
+      currentPage,
+      items,
+      history,
+      budget,
+    } = this.state;
     return (
       <Root>
         <Header>
@@ -153,10 +227,14 @@ class App extends React.Component<{}, MyState> {
           <button type="button" onClick={this.handleChangePage('history')}>
             発注履歴
           </button>
+          <button type="button" onClick={this.handleChangePage('budget')}>
+            実験予算
+          </button>
         </Menu>
         <Content>
           {currentPage === 'order' && <Order items={items} />}
-          {currentPage === 'history' && <History />}
+          {currentPage === 'history' && <History history={history} />}
+          {currentPage === 'budget' && <Budget budget={budget} />}
         </Content>
       </Root>
     );
