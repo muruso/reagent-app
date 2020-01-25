@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Order from './components/Order';
 import History from './components/History';
 import Budget from './components/Budget';
+import Register from './components/Register';
 
 const Root = styled.div`
   height: 100%;
@@ -230,11 +231,18 @@ class App extends React.Component<{}, MyState> {
           <button type="button" onClick={this.handleChangePage('budget')}>
             実験予算
           </button>
+          <button type="button" onClick={this.handleChangePage('register')}>
+            登録
+          </button>
+          <button type="button" onClick={this.handleChangePage('reagents')}>
+            一覧
+          </button>
         </Menu>
         <Content>
           {currentPage === 'order' && <Order items={items} />}
           {currentPage === 'history' && <History history={history} />}
           {currentPage === 'budget' && <Budget budget={budget} />}
+          {currentPage === 'register' && <Register />}
         </Content>
       </Root>
     );
