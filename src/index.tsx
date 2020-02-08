@@ -1,10 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
 import styled from 'styled-components';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import configureStore from './modules/store';
 
-import Order from './components/Order';
+import Order from './containers/Order/index';
 import History from './components/History';
 import Budget from './components/Budget';
+import Register from './components/Register';
+import Reagents from './containers/Reagents/index';
 
 const Root = styled.div`
   height: 100%;
@@ -230,15 +235,36 @@ class App extends React.Component<{}, MyState> {
           <button type="button" onClick={this.handleChangePage('budget')}>
             実験予算
           </button>
+          <button type="button" onClick={this.handleChangePage('register')}>
+            登録
+          </button>
+          <button type="button" onClick={this.handleChangePage('reagents')}>
+            一覧
+          </button>
         </Menu>
         <Content>
-          {currentPage === 'order' && <Order items={items} />}
-          {currentPage === 'history' && <History history={history} />}
-          {currentPage === 'budget' && <Budget budget={budget} />}
+          <Router>
+            <Route exact path="/" render={() => <Order items={items} />} />
+            <Route path="/order" render={() => <Order items={items} />} />
+            <Route
+              path="/history"
+              render={() => <History history={history} />}
+            />
+            <Route path="/reagents" component={Reagents} />
+            <Route path="/budget" render={() => <Budget budget={budget} />} />
+            <Route path="/register" component={Register} />
+          </Router>
         </Content>
       </Root>
     );
   }
 }
 
-render(<App />, document.getElementById('app'));
+const store = configureStore();
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('app'),
+);
