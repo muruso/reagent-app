@@ -28,6 +28,9 @@ export default {
   resolve: {
     extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.json'],
   },
+  devServer: {
+    historyApiFallback: true,
+  },
 
   plugins: [
     new HtmlWebpackPlugin({

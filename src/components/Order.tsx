@@ -21,11 +21,21 @@ const ContentText = styled.p`
   line-height: 27px;
 `;
 
-const ReagentsTable = styled.table`
+const TableWrapper = styled.div`
+  border-radius: 4px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
   position: absolute;
   top: 105px;
   left: 80px;
   width: 675px;
+  height: 550px;
+`;
+
+const ReagentsTable = styled.table`
+  width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
 `;
@@ -81,6 +91,8 @@ const OrderTableHeader = styled(ContentHeader)`
 `;
 
 const OrderTable = styled.table`
+  border-radius: 5px;
+
   width: 320px;
 
   position: absolute;
@@ -138,6 +150,8 @@ const OrderButton = styled(PrimaryButton)`
 
 interface MyProps {
   items: Array<any>;
+  loadReagents: any;
+  reagents: any;
 }
 
 interface MyState {
@@ -152,6 +166,11 @@ class Order extends React.Component<MyProps, MyState> {
       orderItems: [],
       orderAmounts: {},
     };
+  }
+
+  componentDidMount() {
+    const { loadReagents } = this.props;
+    loadReagents();
   }
 
   countUp = (id) => {
@@ -181,47 +200,76 @@ class Order extends React.Component<MyProps, MyState> {
     });
   };
 
-  render() {
-    const { items } = this.props;
+  handleOrderButton = () => {
     const { orderItems, orderAmounts } = this.state;
+    const reagents = orderItems.map((orderItem) => ({
+      reagent_id: orderItem.id,
+      // reagent_price: orderItem.price,
+      reagent_amount: orderAmounts[orderItem.id],
+    }));
+
+    const url = 'http://127.0.0.1:3000/api/v1/orders';
+
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        reagents,
+      }),
+      headers: new Headers({ 'Content-type': 'application/json' }),
+    }).then(() => {
+      // alert('good');
+    });
+  };
+
+  render() {
+    const { reagents } = this.props;
+    const { orderItems, orderAmounts } = this.state;
+
+    console.error(orderItems);
+    console.error(orderAmounts);
+
     return (
       <div>
         <ReagentsTableHeader>
           <ContentText>試薬リスト</ContentText>
         </ReagentsTableHeader>
-        <ReagentsTable>
-          <thead>
-            <ReagentsTableRow>
-              <ReagentsTH>試薬名</ReagentsTH>
-              <ReagentsTH>メーカー</ReagentsTH>
-              <ReagentsTH>内容量</ReagentsTH>
-              <ReagentsTH>単価</ReagentsTH>
-              <ReagentsTH>在庫数</ReagentsTH>
-              <ReagentsTH> - </ReagentsTH>
-            </ReagentsTableRow>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <ReagentsTableBodyRow>
-                <ReagentsTD>{item.name}</ReagentsTD>
-                <ReagentsTD>Maker</ReagentsTD>
-                <ReagentsTD>100ml</ReagentsTD>
-                <ReagentsTD>{item.price}</ReagentsTD>
-                <ReagentsTD>{item.left}</ReagentsTD>
-                <ReagentsTD>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      this.addCart(item);
-                    }}
-                  >
-                    +
-                  </button>
-                </ReagentsTD>
-              </ReagentsTableBodyRow>
-            ))}
-          </tbody>
-        </ReagentsTable>
+        <TableWrapper>
+          <ReagentsTable>
+            <thead>
+              <ReagentsTableRow>
+                <ReagentsTH>試薬名</ReagentsTH>
+                <ReagentsTH>メーカー</ReagentsTH>
+                <ReagentsTH>内容量</ReagentsTH>
+                <ReagentsTH>単価</ReagentsTH>
+                <ReagentsTH>在庫数</ReagentsTH>
+                <ReagentsTH> - </ReagentsTH>
+              </ReagentsTableRow>
+            </thead>
+            <tbody>
+              {reagents.length > 0
+                && reagents.map((item) => (
+                  <ReagentsTableBodyRow key={item.id}>
+                    <ReagentsTD>{item.name}</ReagentsTD>
+                    <ReagentsTD>Maker</ReagentsTD>
+                    <ReagentsTD>100ml</ReagentsTD>
+                    <ReagentsTD>{item.price}</ReagentsTD>
+                    <ReagentsTD>{item.left}</ReagentsTD>
+                    <ReagentsTD>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          this.addCart(item);
+                        }}
+                      >
+                        +
+                      </button>
+                    </ReagentsTD>
+                  </ReagentsTableBodyRow>
+                ))}
+            </tbody>
+          </ReagentsTable>
+        </TableWrapper>
+
         <OrderFloatBox>
           <OrderTableHeader>
             <ContentText>注文リスト</ContentText>
@@ -253,11 +301,13 @@ class Order extends React.Component<MyProps, MyState> {
                     </button>
                   </OrderTableAmount>
                 </OrderTableAmountData>
-                <OrderTablePriceData>12,800円</OrderTablePriceData>
+                <OrderTablePriceData>
+                  {`${item.price * orderAmounts[item.id]}円`}
+                </OrderTablePriceData>
               </OrderTableRow>
             ))}
           </OrderTable>
-          <OrderButton>注文</OrderButton>
+          <OrderButton onClick={this.handleOrderButton}>注文</OrderButton>
         </OrderFloatBox>
       </div>
     );
