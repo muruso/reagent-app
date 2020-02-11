@@ -21,8 +21,6 @@ class Reagents extends React.Component<MyProps> {
   render() {
     const { reagents } = this.props;
 
-    console.error(this.props);
-
     return (
       <div>
         {reagents.length > 0

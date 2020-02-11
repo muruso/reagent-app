@@ -200,11 +200,11 @@ class Order extends React.Component<MyProps, MyState> {
     });
   };
 
-  handleOrderButton = () => {
+  handleOrderButton = (totalPrice) => () => {
     const { orderItems, orderAmounts } = this.state;
     const reagents = orderItems.map((orderItem) => ({
       reagent_id: orderItem.id,
-      // reagent_price: orderItem.price,
+      reagent_price: orderItem.price,
       reagent_amount: orderAmounts[orderItem.id],
     }));
 
@@ -213,6 +213,10 @@ class Order extends React.Component<MyProps, MyState> {
     fetch(url, {
       method: 'POST',
       body: JSON.stringify({
+        order: {
+          user_id: 1,
+          total_price: totalPrice,
+        },
         reagents,
       }),
       headers: new Headers({ 'Content-type': 'application/json' }),
@@ -225,8 +229,10 @@ class Order extends React.Component<MyProps, MyState> {
     const { reagents } = this.props;
     const { orderItems, orderAmounts } = this.state;
 
-    console.error(orderItems);
-    console.error(orderAmounts);
+    const totalPrice = orderItems.reduce(
+      (accum, current) => accum + current.price * orderAmounts[current.id],
+      0,
+    );
 
     return (
       <div>
@@ -307,7 +313,27 @@ class Order extends React.Component<MyProps, MyState> {
               </OrderTableRow>
             ))}
           </OrderTable>
-          <OrderButton onClick={this.handleOrderButton}>注文</OrderButton>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '56px',
+              left: '0',
+              padding: '0 16px',
+              width: '100%',
+              boxSizing: 'border-box',
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              fontFamily: 'Noto Sans CJK JP',
+            }}
+          >
+            <span>合計</span>
+            <span style={{ fontSize: '20px' }}>{`${totalPrice}円`}</span>
+          </div>
+          <OrderButton onClick={this.handleOrderButton(totalPrice)}>
+            注文
+          </OrderButton>
         </OrderFloatBox>
       </div>
     );

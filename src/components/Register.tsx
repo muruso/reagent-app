@@ -31,7 +31,7 @@ interface MyState {
   model_num: any;
   capacity: any;
   price: any;
-  reagents: Array<any>;
+  reagents: Array<any> | Promise<any>;
 }
 
 class Register extends React.Component<MyProps, MyState> {

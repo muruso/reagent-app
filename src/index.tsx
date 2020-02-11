@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import configureStore from './modules/store';
 
 import Order from './containers/Order/index';
-import History from './components/History';
+import History from './containers/History/index';
 import Budget from './components/Budget';
 import Register from './components/Register';
 import Reagents from './containers/Reagents/index';

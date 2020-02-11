@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const YearWrapper = styled.div`
@@ -75,10 +75,21 @@ const TableData = styled.td`
 
 interface MyProps {
   history: Array<any>;
+  orders: Array<any>;
+  loadOrders: any;
 }
 
 const History = (props: MyProps) => {
-  const { history } = props;
+  const { orders, loadOrders } = props;
+  const [isFirst, setIsFirst] = useState(true);
+
+  useEffect(() => {
+    if (isFirst) {
+      loadOrders();
+      setIsFirst(false);
+    }
+  });
+
   return (
     <div>
       <YearWrapper>
@@ -87,36 +98,49 @@ const History = (props: MyProps) => {
       <Content>
         <TableWrapper>
           <Table>
-            <TableHeaderRow>
-              <TableHeader>発注日</TableHeader>
-              <TableHeader>納品日</TableHeader>
-              <TableHeader>発注者</TableHeader>
-              <TableHeader>試薬名</TableHeader>
-              <TableHeader>単価</TableHeader>
-              <TableHeader>個数</TableHeader>
-              <TableHeader>価格</TableHeader>
-              <TableHeader>合計</TableHeader>
-            </TableHeaderRow>
-            {history.map((data) => (
-              <TableBodyRow>
-                <TableData>{data.orderDate}</TableData>
-                <TableData>{data.deliveryDate}</TableData>
-                <TableData>{data.name}</TableData>
-                <TableData>
-                  {data.reagents.map((reagent) => `${reagent.reagentName}\n`)}
-                </TableData>
-                <TableData>
-                  {data.reagents.map((reagent) => `${reagent.unitPrice}\n`)}
-                </TableData>
-                <TableData>
-                  {data.reagents.map((reagent) => `${reagent.number}\n`)}
-                </TableData>
-                <TableData>
-                  {data.reagents.map((reagent) => `${reagent.price}\n`)}
-                </TableData>
-                <TableData>{data.totalPrice}</TableData>
-              </TableBodyRow>
-            ))}
+            <thead>
+              <TableHeaderRow>
+                <TableHeader>発注日</TableHeader>
+                <TableHeader>納品日</TableHeader>
+                <TableHeader>発注者</TableHeader>
+                <TableHeader>試薬名</TableHeader>
+                <TableHeader>単価</TableHeader>
+                <TableHeader>個数</TableHeader>
+                <TableHeader>価格</TableHeader>
+                <TableHeader>合計</TableHeader>
+              </TableHeaderRow>
+            </thead>
+            <tbody>
+              {orders.length > 0
+                && orders.map((data, i) => (
+                  <TableBodyRow key={`${i}_${data.id}`}>
+                    <TableData>{data.ordered_at}</TableData>
+                    <TableData>{data.delivered_at}</TableData>
+                    <TableData>Ryo Tamura</TableData>
+                    <TableData>
+                      {data.reagents.map(
+                        (reagent) => `${reagent.reagent_name}\n`,
+                      )}
+                    </TableData>
+                    <TableData>
+                      {data.reagents.map(
+                        (reagent) => `${reagent.reagent_price}\n`,
+                      )}
+                    </TableData>
+                    <TableData>
+                      {data.reagents.map(
+                        (reagent) => `${reagent.reagent_amount}\n`,
+                      )}
+                    </TableData>
+                    <TableData>
+                      {data.reagents.map(
+                        (reagent) => `${reagent.reagent_price * reagent.reagent_amount}\n`,
+                      )}
+                    </TableData>
+                    <TableData>{data.total_price}</TableData>
+                  </TableBodyRow>
+                ))}
+            </tbody>
           </Table>
         </TableWrapper>
       </Content>
